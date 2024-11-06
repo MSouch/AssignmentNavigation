@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import { View, FlatList, StyleSheet } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useFocusEffect } from '@react-navigation/native';
 import { RootStackParamList } from '../navigation/StackNavigator';
 import { TransactionEntry, getInitialData } from '../utils/utility';
 import TransactionCard from '../components/TransactionCard';
@@ -16,13 +17,20 @@ type Props = {
 const HomeScreen: React.FC<Props> = ({ navigation }) => {
   const [transactions, setTransactions] = useState<TransactionEntry[]>([]);
 
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      setTransactions(getInitialData());
-    });
-
-    return unsubscribe;
-  }, [navigation]);
+  useFocusEffect(
+    useCallback(() => {
+      const updateTransactions = () => {
+        const updatedTransactions = getInitialData();
+        setTransactions(updatedTransactions);
+      };
+      
+      updateTransactions();
+      
+      return () => {
+        // Cleanup if needed
+      };
+    }, [])
+  );
 
   const renderItem = ({ item }: { item: TransactionEntry }) => (
     <TransactionCard

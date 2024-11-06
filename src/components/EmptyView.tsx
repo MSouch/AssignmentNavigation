@@ -5,7 +5,7 @@ const EmptyView: React.FC = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.text}>No transactions yet!</Text>
-      <Text style={styles.subText}>Add your first transaction using the + button below</Text>
+      <Text style={[styles.subText, styles.spacing]}>Add your first transaction using the + button below</Text>
     </View>
   );
 };
@@ -24,6 +24,9 @@ const styles = StyleSheet.create({
   subText: {
     fontSize: 16,
     color: 'gray',
+  },
+  spacing: {
+    marginTop: 10, // Adjust the value as needed
   },
 });
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp } from '@react-navigation/native';
@@ -30,15 +30,14 @@ interface Props {
 const AddTransactionScreen: React.FC<Props> = ({ navigation, route }) => {
   const [transaction, setTransaction] = useState<TransactionEntry>(defaultTransactionEntry);
 
-  const setTransactionField = <K extends keyof TransactionEntry>(
-    field: K,
-    value: TransactionEntry[K]
-  ) => {
-    setTransaction(prev => ({
-      ...prev,
-      [field]: value
-    }));
-  };
+  useEffect(() => {
+    if (route.params?.transactionId) {
+      const foundTransaction = getTransactionByID(route.params.transactionId);
+      if (foundTransaction) {
+        setTransaction(foundTransaction);
+      }
+    }
+  }, [route.params?.transactionId]);
 
   const handleSubmit = () => {
     if (!transaction.title.trim()) {
@@ -60,7 +59,10 @@ const AddTransactionScreen: React.FC<Props> = ({ navigation, route }) => {
     };
 
     addEditTransaction(finalTransaction);
-    navigation.goBack();
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'Home' }],
+    });
   };
 
   return (
@@ -71,7 +73,7 @@ const AddTransactionScreen: React.FC<Props> = ({ navigation, route }) => {
           <TextInput
             style={styles.input}
             value={transaction.title}
-            onChangeText={(text) => setTransactionField('title', text)}
+            onChangeText={(text) => setTransaction(prev => ({ ...prev, title: text }))}
             placeholder="Enter title"
           />
         </View>
@@ -81,7 +83,7 @@ const AddTransactionScreen: React.FC<Props> = ({ navigation, route }) => {
           <TextInput
             style={[styles.input, styles.textArea]}
             value={transaction.desc}
-            onChangeText={(text) => setTransactionField('desc', text)}
+            onChangeText={(text) => setTransaction(prev => ({ ...prev, desc: text }))}
             placeholder="Enter description"
             multiline
             numberOfLines={4}
@@ -93,7 +95,10 @@ const AddTransactionScreen: React.FC<Props> = ({ navigation, route }) => {
           <TextInput
             style={styles.input}
             value={transaction.amount.toString()}
-            onChangeText={(text) => setTransactionField('amount', parseFloat(text) || 0)}
+            onChangeText={(text) => {
+              const amount = text.replace(/[^0-9.]/g, '');
+              setTransaction(prev => ({ ...prev, amount: parseFloat(amount) || 0 }));
+            }}
             keyboardType="decimal-pad"
             placeholder="Enter amount"
           />
@@ -111,7 +116,7 @@ const AddTransactionScreen: React.FC<Props> = ({ navigation, route }) => {
                     styles.typeButton,
                     transaction.type === type && styles.selectedType
                   ]}
-                  onPress={() => setTransactionField('type', type as TransactionType)}
+                  onPress={() => setTransaction(prev => ({ ...prev, type: type as TransactionType }))}
                 >
                   <Text style={[
                     styles.typeText,

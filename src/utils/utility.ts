@@ -1,7 +1,5 @@
 import uuid from 'react-native-uuid';
 
-
-
 /**
  * According the transaction type, background color can be used.
  * 0 : Green : Essential Transaction
@@ -10,7 +8,6 @@ import uuid from 'react-native-uuid';
  */
 export const TransactionType_bgColor = ['#C9E9D2','#FFCFB3','#CAF4FF'];
 
-
 /**
  * Types of Transaction that are supported in this application.
  */
@@ -18,7 +15,7 @@ export enum TransactionType {
     Essential = 0,
     Leisure,
     Others,
-};
+}
 
 /**
  * Interface defining the structure of a Transaction Entry.
@@ -30,7 +27,6 @@ export interface TransactionEntry {
     desc : string,
     type : TransactionType,
 }
-
 
 /**
  * A default TransactionEntry object with default values for each field.
@@ -95,7 +91,6 @@ export function getInitialData() : Array<TransactionEntry> {
     return TRANSACTION_DATA;
 }
 
-
 /**
  * Add a new entry in TRANSACTION_DATA array if it is not present. Update the entry if it is already present.
  * @param entry TransactionEntry object. 
@@ -121,7 +116,6 @@ function getIndex(entry : TransactionEntry) : number{
     return -1;
 }
 
-
 /**
  * Returns a single transaction entry based on the provided id.
  * Can return null or undefined.
@@ -144,7 +138,7 @@ export function getTransactionByType( type : TransactionType ) : Array<Transacti
         item.type===type;
     })
     return filterData;
-} 
+}
 
 /**
  * 

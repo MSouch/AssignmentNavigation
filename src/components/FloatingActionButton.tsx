@@ -9,7 +9,7 @@ interface FloatingActionButtonProps {
 const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({ onPress }) => {
   return (
     <TouchableOpacity style={styles.fab} onPress={onPress}>
-      <AntDesign name="plus" size={24} color="white" />
+      <AntDesign name="plus" size={24} color="black" />
     </TouchableOpacity>
   );
 };
@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: 'blue',
+    backgroundColor: 'orange',
     justifyContent: 'center',
     alignItems: 'center',
   },
